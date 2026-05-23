@@ -63,12 +63,18 @@ feature_names = X.columns.tolist()
 n_attack = y.sum()
 print(f"  Shape: {X.shape}  |  ATTACK: {n_attack:,} ({n_attack/len(y)*100:.2f}%)")
 
-# ─── Train / Test split (estratificado) ───────────────────────────────────────
-X_train, X_test, y_train, y_test = train_test_split(
+# ─── Train / Val / Test split estratificado (60 / 20 / 20) ───────────────────
+X_temp, X_test, y_temp, y_test = train_test_split(
     X, y, test_size=TEST_SIZE, stratify=y, random_state=RANDOM_STATE
 )
-print(f"  Train: {len(X_train):,}  |  Test: {len(X_test):,}")
-print(f"  ATTACK en test: {y_test.sum():,} ({y_test.mean()*100:.2f}%)")
+X_train, X_val, y_train, y_val = train_test_split(
+    X_temp, y_temp, test_size=0.25, stratify=y_temp, random_state=RANDOM_STATE
+)
+total = len(X_train) + len(X_val) + len(X_test)
+print(f"  Train: {len(X_train):,} ({len(X_train)/total*100:.0f}%)  ATTACK={y_train.sum():,}")
+print(f"  Val:   {len(X_val):,}  ({len(X_val)/total*100:.0f}%)  ATTACK={y_val.sum():,}")
+print(f"  Test:  {len(X_test):,}  ({len(X_test)/total*100:.0f}%)  ATTACK={y_test.sum():,}")
+print(f"  Test permanece ciego hasta evaluación final")
 
 cv = StratifiedKFold(n_splits=CV_FOLDS, shuffle=True, random_state=RANDOM_STATE)
 
@@ -208,6 +214,15 @@ print(df_res.to_string(index=False))
 csv_path = os.path.join(OUTPUT_DIR, f"metricas_modelos_{VARIANT}.csv")
 df_res.to_csv(csv_path, index=False)
 print(f"\nMétricas guardadas: {csv_path}")
+# Guardar split para reutilización en scripts 03-05
+split_data = {
+    "X_train": X_train, "X_val": X_val, "X_test": X_test,
+    "y_train": y_train, "y_val": y_val, "y_test": y_test,
+    "feature_names": feature_names,
+}
+split_path_out = os.path.join(OUTPUT_DIR, "split_data.joblib")
+joblib.dump(split_data, split_path_out)
+print(f"Split 60/20/20 guardado: {split_path_out}")
 
 # ─── Gráficos comparativos ────────────────────────────────────────────────────
 print("\n=== Generando gráficos ===")
