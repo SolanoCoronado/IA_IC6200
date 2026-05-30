@@ -24,7 +24,7 @@ Sistema de detección de intrusiones en tráfico de red mediante clasificación 
 
 ### Reporte Etapa 2
 
-**[Etapa2_IA.docx](https://estudianteccr-my.sharepoint.com/:w:/g/personal/andco97_estudiantec_cr/IQDddfcKzbWCR6ffVwCquC_KAeO-nAX3mNa5cJyTsJmVoUk?e=ihX8SY)** — Reporte completo de modelado, entrenamiento, XAI y evaluación.
+**[Etapa2_IA.pdf](https://estudianteccr-my.sharepoint.com/:b:/g/personal/andco97_estudiantec_cr/IQC4K1u7X7-nQb8ugR9rN5ECAV--ZYQ1-tINyutWGKtKULE?e=ImYI7G)** — Reporte completo de modelado, entrenamiento, XAI y evaluación.
 
 Cubre: 
 - Protocolo experimental 
