@@ -16,8 +16,8 @@ Sistema de detección de intrusiones en tráfico de red mediante clasificación 
 
 ## Entregas
 
-| Etapa | Descripción | Peso | Estado |
-|-------|-------------|:----:|:------:|
+| Etapa | Descripción |
+|-------|-------------|
 | Etapa 1 | Análisis del problema y diseño de la solución |
 | **Etapa 2** | **Modelado, Entrenamiento, Explicabilidad y Evaluación** |
 | Etapa 3 | Integración en Agentes Inteligentes y Validación Científica |
