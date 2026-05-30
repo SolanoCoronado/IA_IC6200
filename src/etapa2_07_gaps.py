@@ -221,12 +221,3 @@ cv_fig_path = os.path.join(OUTPUT_DIR, "cv_scores_por_fold.png")
 fig.savefig(cv_fig_path, dpi=150)
 plt.close(fig)
 print(f"  Gráfico por fold guardado: cv_scores_por_fold.png")
-
-# ─── Resumen final ────────────────────────────────────────────────────────────
-print("\n" + "=" * 60)
-print("GAPS RESUELTOS")
-print("=" * 60)
-print("  ✅ Gap 1: distribucion_clases_final.png")
-print("  ✅ Gap 2: fn_analysis_formal.json")
-print("  ✅ Gap 3: cv_results_summary.json + cv_scores_por_fold.png")
-print("\nEtapa 2 — todos los requerimientos de la guía cubiertos.")

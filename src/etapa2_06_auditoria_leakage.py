@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import HistGradientBoostingClassifier
 
-BASE_DIR = r"C:\Users\pavel\OneDrive - Estudiantes ITCR\Documentos\GitHub\IA_IC6200"
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 OUT_DIR = os.path.join(BASE_DIR, "outputs", "etapa2")
 DATA_PATH = os.path.join(OUT_DIR, "datos_limpios_base.csv")
 SPLIT_PATH = os.path.join(OUT_DIR, "split_data.joblib")
