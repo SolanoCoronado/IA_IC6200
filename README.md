@@ -26,7 +26,16 @@ Sistema de detección de intrusiones en tráfico de red mediante clasificación 
 
 **[Etapa2_IA.docx](https://estudianteccr-my.sharepoint.com/:w:/g/personal/andco97_estudiantec_cr/IQDddfcKzbWCR6ffVwCquC_KAeO-nAX3mNa5cJyTsJmVoUk?e=ihX8SY)** — Reporte completo de modelado, entrenamiento, XAI y evaluación.
 
-Cubre: protocolo experimental · auditoría de leakage · baselines · tuning sistemático · selección de umbral · diagnóstico de overfitting · análisis de errores (FP/FN) · SHAP global y local · limitaciones y conclusiones.
+Cubre: 
+- Protocolo experimental 
+- Auditoría de leakage 
+- Baselines 
+- Tuning sistemático 
+- Selección de umbral 
+- Diagnóstico de overfitting 
+- Análisis de errores (FP/FN) 
+- SHAP global y local 
+- Limitaciones y conclusiones
 
 ---
 
