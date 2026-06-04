@@ -1,0 +1,201 @@
+@startuml
+
+skinparam backgroundColor #FAFAFA
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+
+skinparam package {
+    BackgroundColor #EEF4FF
+    BorderColor #4A90D9
+    FontStyle bold
+}
+
+skinparam class {
+    BackgroundColor #FFFFFF
+    BorderColor #4A90D9
+    HeaderBackgroundColor #D6E8FF
+    ArrowColor #4A90D9
+    FontSize 11
+}
+
+skinparam note {
+    BackgroundColor #FFFDE7
+    BorderColor #F0B429
+}
+
+class INPUT <<input>> {
+    Flujo de red
+    dict features
+}
+
+package "src/agents/" {
+
+    class OrchestratorAgent {
+        + run(features, ground_truth) : dict
+        + session_stats() : dict
+        --
+        - _detector : DetectorAgent
+        - _explainer : ExplainerAgent
+        - _context : ContextAgent
+        - _decision : DecisionAgent
+        - _total_runs : int
+        - _errors : int
+    }
+
+    class DetectorAgent {
+        + run(features) : dict
+        + total_runs : int
+    }
+
+    class ExplainerAgent {
+        + run(features, predict_result) : dict
+        + should_run(prob_attack) : bool
+        + total_runs : int
+        + total_skipped : int
+    }
+
+    class ContextAgent {
+        + run(features, predict_result) : dict
+        + should_run(predict_result) : bool
+        + total_runs : int
+        + total_skipped : int
+    }
+
+    class DecisionAgent {
+        + run() : dict
+        + build_reasoning() : dict
+        + total_runs : int
+    }
+}
+
+package "src/tools/" {
+
+    class predict_flow <<tool>> {
+        + predict_flow(features) : dict
+        --
+        prob_attack
+        prediction
+        label
+        missing_features
+        latency_ms
+    }
+
+    class explain_flow <<tool>> {
+        + explain_flow(features) : dict
+        --
+        top_features
+        summary
+        explanation_timeout
+    }
+
+    class query_history <<tool>> {
+        + query_history(features) : dict
+        --
+        attack_ratio
+        historical_signal
+        neighbor_distances
+    }
+
+    class check_threshold <<tool>> {
+        + check_threshold(predict_result) : dict
+        --
+        zone
+        recommended_action
+        scope_warning
+    }
+
+    class agent_logger <<tool>> {
+        + log_run() : None
+    }
+}
+
+package "outputs/etapa2/" {
+    class DT_MODEL <<artifact>> {
+        mejor_modelo_DT_base.joblib
+        --
+        DecisionTreeClassifier
+        max_depth=20
+        criterion=entropy
+        class_weight=balanced
+    }
+
+    class SPLIT <<artifact>> {
+        split_data.joblib
+        --
+        X_test
+        y_test
+        feature_names
+    }
+
+    class THR <<artifact>> {
+        selected_threshold.json
+        --
+        threshold = 0.05
+    }
+}
+
+package "outputs/etapa3/" {
+    class LOG <<output>> {
+        agent_run_log.jsonl
+        --
+        timestamp
+        features_hash
+        tools_called
+        prob_attack
+        decision
+        zone
+        total_latency_ms
+    }
+}
+
+OrchestratorAgent *-- DetectorAgent   : coordina
+OrchestratorAgent *-- ExplainerAgent  : coordina
+OrchestratorAgent *-- ContextAgent    : coordina
+OrchestratorAgent *-- DecisionAgent   : coordina
+
+DetectorAgent  ..> predict_flow    : usa
+ExplainerAgent ..> explain_flow    : usa
+ContextAgent   ..> query_history   : usa
+DecisionAgent  ..> check_threshold : usa
+DecisionAgent  ..> agent_logger    : usa
+
+predict_flow  ..> DT_MODEL  : carga
+predict_flow  ..> THR       : carga
+explain_flow  ..> DT_MODEL  : carga
+query_history ..> SPLIT     : carga
+
+INPUT --> OrchestratorAgent : features dict
+agent_logger ..> LOG : escribe
+
+note right of check_threshold
+  Zonas operativas:
+  high_attack: prob >= 0.40 -> BLOCK
+  uncertain: 0.05 <= prob < 0.40 -> INVESTIGATE
+  monitor: 0.02 < prob < 0.05 -> MONITOR
+  high_benign: prob <= 0.02 -> ALLOW
+end note
+
+note right of DetectorAgent
+  Siempre activo
+end note
+
+note right of ExplainerAgent
+  Activo si prob > 0.03
+  Timeout: 5 segundos
+end note
+
+note right of ContextAgent
+  Activo si zona incierta
+  o features faltantes
+end note
+
+note right of DecisionAgent
+  Siempre activo
+end note
+
+note right of agent_logger
+  Escribe en JSONL
+  con features_hash SHA-256
+end note
+
+@enduml
